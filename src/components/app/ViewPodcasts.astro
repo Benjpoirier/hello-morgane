@@ -86,7 +86,7 @@ import { feeds, episodes } from '../../data/app';
                 <span class="ep-title">{e.title}</span>
                 {e.fresh && <span class="new">New</span>}
                 {e.bytes && (
-                  <span class="bytes mono" title="L'enceinte tronque les titres au-delà de 66 octets">
+                  <span class="bytes mono" title="Le format de la Merlin ne réserve que 66 octets par titre : au-delà, le titre est coupé">
                     66+
                   </span>
                 )}

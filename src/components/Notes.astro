@@ -7,15 +7,26 @@ import Icon from './Icon.astro';
     <span class="icon warn"><Icon name="info" size={17} /></span>
     <span>
       <strong class="warn-t">Bêta —</strong> Morgane est en développement : le contenu de l'enceinte
-      peut être corrompu à tout moment. En cas de souci, une resync avec l'app Merlin officielle
-      remet l'enceinte d'aplomb. Garde ta bibliothèque locale comme référence.
+      peut être corrompu à tout moment. La seule récupération documentée par Merlin est la
+      réinitialisation depuis l'app officielle, qui <strong>efface tous les titres transférés</strong>.
+      Garde ta bibliothèque locale comme référence.
+    </span>
+  </p>
+
+  <p class="note">
+    <span class="icon warn"><Icon name="triangle-alert" size={17} /></span>
+    <span>
+      <strong class="warn-t">Garantie —</strong> les conditions de vente de La Chouette Radio excluent
+      de la garantie les enceintes sur lesquelles un logiciel a été ajouté ou modifié sans leur
+      accord. Installer Morgane est un choix éclairé, qui t'appartient.
     </span>
   </p>
 
   <p class="note">
     <span class="icon"><Icon name="shield" size={17} /></span>
     <span>
-      <strong>Projet indépendant —</strong> non affilié à Bayard, Radio France ou La Chouette Radio.
+      <strong>Projet indépendant —</strong> Morgane n'est ni affiliée, ni approuvée, ni soutenue par
+      La Chouette Radio, éditrice de la Merlin, ni par ses actionnaires Radio France et Bayard.
       « Merlin » est une marque de ses détenteurs, citée à titre de compatibilité. Utilise du contenu
       dont tu détiens les droits.
     </span>
@@ -30,8 +41,8 @@ import Icon from './Icon.astro';
     margin: 0 auto;
     padding: 50px 32px 10px;
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 34px;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 28px;
     border-top: 1px solid oklch(1 0 0 / 0.09);
   }
 

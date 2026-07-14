@@ -10,21 +10,21 @@ export const features = [
   {
     span: 3,
     title: 'Connexion Wi-Fi directe',
-    body: "Morgane parle à l'enceinte sur son protocole réseau reverse-engineeré — aucun serveur tiers, tout reste entre ton ordinateur et la boîte.",
+    body: "Morgane parle à l'enceinte sur son protocole réseau reverse-engineeré. Le transfert est direct : aucun serveur ne s'interpose entre ton ordinateur et la boîte.",
     chip: '192.168.4.1:50000',
     icon: 'wifi',
   },
   {
     span: 3,
     title: 'Flux RSS illimités',
-    body: "Abonne-toi à n'importe quel podcast public. Épisodes, images et métadonnées récupérés automatiquement.",
+    body: "Abonne-toi à autant de flux RSS publics que tu veux. Épisodes, images et métadonnées récupérés automatiquement.",
     chip: null,
     icon: 'rss',
   },
   {
     span: 2,
     title: 'Conversion automatique',
-    body: "FFmpeg est récupéré au premier lancement s'il manque. Transcodage au bon format, progression en direct.",
+    body: "FFmpeg est téléchargé depuis GitHub au premier lancement s'il manque, empreinte vérifiée. Transcodage au bon format, progression en direct.",
     chip: null,
     icon: 'download',
   },
@@ -37,8 +37,8 @@ export const features = [
   },
   {
     span: 2,
-    title: '100 % local',
-    body: 'Pas de compte, pas de télémétrie, pas de cloud. Rust + Tauri, code ouvert et auditable.',
+    title: 'Aucun serveur Morgane',
+    body: 'Pas de compte, pas de télémétrie, aucun backend. Rust + Tauri, GPL-3.0+, code ouvert et auditable.',
     chip: null,
     icon: 'lock',
   },
@@ -54,7 +54,7 @@ export const features = [
 export const steps = [
   {
     n: '01',
-    net: 'wifi · maison',
+    net: 'wifi · merlin',
     moon: 9,
     title: 'Repère ta Merlin',
     body: "Une première fois, rejoins le Wi-Fi de l'enceinte : Morgane l'enregistre et lit ce qui est dessus.",

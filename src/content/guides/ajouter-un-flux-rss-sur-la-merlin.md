@@ -1,6 +1,6 @@
 ---
 title: "Ajouter un flux RSS à l'enceinte Merlin"
-description: "Trouver l'URL du flux RSS d'un podcast et l'ajouter à l'enceinte Merlin avec Morgane. Fonctionne avec n'importe quel podcast public."
+description: "Trouver l'URL du flux RSS d'un podcast et l'ajouter à l'enceinte Merlin avec Morgane. Fonctionne avec les podcasts publics diffusés en RSS."
 heading: "Ajouter un flux RSS à l'enceinte Merlin"
 lede: "Un podcast public, c'est une URL. Voici comment la trouver, et ce que Morgane en fait une fois qu'elle est dans l'application."
 updated: 2026-07-14
@@ -11,7 +11,9 @@ order: 2
 
 Un flux RSS est l'adresse technique d'un podcast : une URL qui liste ses épisodes, leurs titres, leurs dates, leurs images et les fichiers audio à télécharger. **Tout podcast public en possède un** — c'est ce qui permet à Spotify, Apple Podcasts ou Deezer de le diffuser sans accord particulier.
 
-Morgane s'abonne directement à cette URL. C'est ce qui lui permet d'accepter **n'importe quel podcast public**, et pas seulement un catalogue choisi à l'avance.
+Morgane s'abonne directement à cette URL. C'est ce qui lui permet d'accepter l'immense majorité des podcasts publics, et pas seulement un catalogue choisi à l'avance.
+
+Une précision technique : Morgane lit le **RSS 2.0**, le format de très loin le plus répandu pour les podcasts. Les flux au format **Atom** ne sont pas pris en charge. Et un épisode n'est repris que s'il porte un fichier audio joint (`<enclosure>`) — c'est la norme, mais un flux qui ne fait que renvoyer vers une page web ne donnera rien.
 
 ## Trouver l'URL du flux
 
@@ -42,4 +44,4 @@ Un détail qui compte : à chaque synchronisation, Morgane calcule un **diff** e
 
 ## Une limite à connaître
 
-L'enceinte tronque les titres d'épisode au-delà de **66 octets** — et les accents comptent double. Les titres à rallonge, fréquents dans les podcasts d'histoires, sont donc souvent coupés. Morgane te le signale avant le transfert : voir [pourquoi les titres sont tronqués](/titres-tronques-merlin-66-octets/).
+Le format de la Merlin ne réserve que **66 octets** par titre — et les accents comptent double. Les titres à rallonge, fréquents dans les podcasts d'histoires, sont donc souvent coupés. Morgane te le signale avant le transfert : voir [pourquoi les titres sont tronqués](/titres-tronques-merlin-66-octets/).
