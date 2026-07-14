@@ -1,6 +1,7 @@
 ---
 import { Font } from 'astro:assets';
-import { links, VERSION } from '../data/site';
+import { links } from '../data/site';
+import { getRelease } from '../data/release';
 import '../styles/global.css';
 
 interface Props {
@@ -13,6 +14,8 @@ interface Props {
 
 const { title, description, path = '/', noindex = false, schemas = [] } = Astro.props;
 
+const { version } = await getRelease();
+
 const canonical = new URL(path, Astro.site).href;
 const ogImage = new URL('/og.png', Astro.site).href;
 
@@ -22,7 +25,7 @@ const jsonLd = {
   name: 'Morgane',
   applicationCategory: 'MultimediaApplication',
   operatingSystem: 'macOS, Windows, Linux',
-  softwareVersion: VERSION,
+  softwareVersion: version,
   description,
   url: canonical,
   image: ogImage,

@@ -3,6 +3,16 @@ name: Deploy
 on:
   push:
     branches: [main]
+
+  # Déclenché par le repo Morgane à chaque release publiée.
+  repository_dispatch:
+    types: [morgane-release]
+
+  # Filet de sécurité : si le dispatch échoue, le site rattrape la release
+  # dans la nuit. Le build lit l'API GitHub, donc un rebuild suffit.
+  schedule:
+    - cron: '0 4 * * *'
+
   workflow_dispatch:
 
 concurrency:
@@ -25,6 +35,8 @@ jobs:
       - run: pnpm install --frozen-lockfile
 
       - run: pnpm build
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:

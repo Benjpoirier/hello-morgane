@@ -1,7 +1,9 @@
 import type { APIRoute } from 'astro';
-import { links, platforms, VERSION } from '../data/site';
+import { links } from '../data/site';
+import { getRelease } from '../data/release';
 
-export const GET: APIRoute = ({ site }) => {
+export const GET: APIRoute = async ({ site }) => {
+  const { version, platforms } = await getRelease();
   const body = `# Morgane
 
 > Application de bureau libre et open source qui transfère n'importe quel podcast RSS vers l'enceinte pour enfants Merlin (Bayard / Radio France), via une connexion Wi-Fi directe. Aucun compte, aucun cloud, aucune télémétrie.
@@ -29,7 +31,7 @@ L'enceinte Merlin n'accepte qu'une connexion à la fois. Le rituel se fait donc 
 
 ## Téléchargement
 
-Version ${VERSION}, publiée sur les Releases GitHub. Un seul fichier, rien d'autre à installer.
+Version ${version}, publiée sur les Releases GitHub. Un seul fichier, rien d'autre à installer.
 
 ${platforms.map((p) => `- ${p.title} (${p.detail}) : ${p.href}`).join('\n')}
 

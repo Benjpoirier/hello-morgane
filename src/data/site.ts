@@ -1,41 +1,10 @@
-export const VERSION = '0.1.0';
-
 export const INDEXNOW_KEY = 'e61b8b5577bdc95ede141cb8b4b725a9';
 
 export const links = {
   github: 'https://github.com/Benjpoirier/Morgane',
-  releases: 'https://github.com/Benjpoirier/Morgane/releases/tag/v0.1.0',
+  releases: 'https://github.com/Benjpoirier/Morgane/releases/latest',
   donate: 'https://liberapay.com/benjpoirier/donate',
 } as const;
-
-const DL = `https://github.com/Benjpoirier/Morgane/releases/download/v${VERSION}`;
-
-export const platforms = [
-  {
-    title: 'macOS',
-    detail: 'universal · .dmg',
-    href: `${DL}/Morgane_${VERSION}_universal.dmg`,
-    icon: 'apple',
-  },
-  {
-    title: 'Windows',
-    detail: 'x64 · .msi',
-    href: `${DL}/Morgane_${VERSION}_x64_en-US.msi`,
-    icon: 'windows',
-  },
-  {
-    title: 'Linux',
-    detail: 'x86_64 · appimage',
-    href: `${DL}/Morgane_${VERSION}_amd64.AppImage`,
-    icon: 'linux',
-  },
-] as const;
-
-export const altDownloads = [
-  { label: '.exe (installeur Windows)', href: `${DL}/Morgane_${VERSION}_x64-setup.exe` },
-  { label: '.deb', href: `${DL}/Morgane_${VERSION}_amd64.deb` },
-  { label: '.rpm', href: `${DL}/Morgane-${VERSION}-1.x86_64.rpm` },
-] as const;
 
 export const features = [
   {

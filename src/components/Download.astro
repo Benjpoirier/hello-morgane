@@ -1,13 +1,16 @@
 ---
 import Icon from './Icon.astro';
-import { platforms, altDownloads, links, VERSION } from '../data/site';
+import { links } from '../data/site';
+import { getRelease } from '../data/release';
+
+const { version, platforms, alt } = await getRelease();
 ---
 
 <section id="get">
   <h2 class="serif">Installe Morgane <span class="accent">sur ton ordinateur</span></h2>
   <p class="sub">
     Un seul fichier à télécharger. FFmpeg est récupéré tout seul au premier lancement s'il te
-    manque. Version <code class="mono">{VERSION}</code> · publiée sur les Releases GitHub.
+    manque. Version <code class="mono">{version}</code> · publiée sur les Releases GitHub.
   </p>
 
   <ul class="grid">
@@ -29,7 +32,7 @@ import { platforms, altDownloads, links, VERSION } from '../data/site';
   <p class="alt">
     Autres formats :
     {
-      altDownloads.map((d, i) => (
+      alt.map((d, i) => (
         <>
           {i > 0 && <span aria-hidden="true"> · </span>}
           <a href={d.href} rel="noopener">{d.label}</a>
