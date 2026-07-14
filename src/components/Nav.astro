@@ -1,22 +1,25 @@
 ---
 import Logo from './Logo.astro';
 import { links } from '../data/site';
+
+const onHome = Astro.url.pathname === '/';
+const anchor = (id: string) => (onHome ? `#${id}` : `/#${id}`);
 ---
 
 <header>
   <nav aria-label="Navigation principale">
-    <a href="#top" class="brand">
+    <a href={onHome ? '#top' : '/'} class="brand">
       <Logo size={27} />
       <span class="serif">Morgane</span>
     </a>
 
     <div class="spacer"></div>
 
-    <a class="nav-link" href="#features">Fonctionnalités</a>
-    <a class="nav-link" href="#flow">Le rituel</a>
-    <a class="nav-link" href="#guides">Guides</a>
+    <a class="nav-link" href={anchor('features')}>Fonctionnalités</a>
+    <a class="nav-link" href={anchor('flow')}>Le rituel</a>
+    <a class="nav-link" href={anchor('guides')}>Guides</a>
     <a class="nav-link" href={links.github} rel="noopener">GitHub</a>
-    <a class="cta" href="#get">Télécharger</a>
+    <a class="cta" href={anchor('get')}>Télécharger</a>
   </nav>
 </header>
 

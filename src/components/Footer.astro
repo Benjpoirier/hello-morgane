@@ -1,6 +1,8 @@
 ---
 import Logo from './Logo.astro';
 import { links } from '../data/site';
+
+const onHome = Astro.url.pathname === '/';
 ---
 
 <footer>
@@ -11,7 +13,7 @@ import { links } from '../data/site';
 
   <nav aria-label="Liens de pied de page">
     <a href={links.github} rel="noopener">GitHub</a>
-    <a href="#get">Télécharger</a>
+    <a href={onHome ? '#get' : '/#get'}>Télécharger</a>
     <a href={links.donate} rel="noopener">Soutenir</a>
   </nav>
 </footer>
