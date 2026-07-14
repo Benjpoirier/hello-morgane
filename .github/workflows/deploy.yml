@@ -33,7 +33,7 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./dist/
           server-dir: ${{ secrets.FTP_SERVER_DIR }}
-          protocol: ftps
+          protocol: ftp
           dangerous-clean-slate: false
 
       - name: Ping IndexNow (Bing, Yandex, Seznam…)
