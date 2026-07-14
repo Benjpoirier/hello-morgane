@@ -1,0 +1,78 @@
+---
+let seed = 7;
+const rnd = () => {
+  seed = (seed * 1103515245 + 12345) & 0x7fffffff;
+  return seed / 0x7fffffff;
+};
+
+const stars = Array.from({ length: 150 }, () => {
+  const size = (rnd() * 2 + 1).toFixed(1);
+  // Exposant 1.5 : densité plus forte en haut (le ciel du hero), qui se
+  // clairsème vers le bas de la page.
+  const top = (Math.pow(rnd(), 1.5) * 100).toFixed(2);
+  const left = (rnd() * 100).toFixed(2);
+  const gold = rnd() > 0.85;
+  const opacity = (rnd() * 0.6 + 0.2).toFixed(2);
+  const duration = (rnd() * 3 + 2).toFixed(1);
+  const delay = (rnd() * 3).toFixed(1);
+
+  return { size, top, left, gold, opacity, duration, delay };
+});
+---
+
+<div class="sky" aria-hidden="true">
+  <div class="stars">
+    {
+      stars.map((s) => (
+        <span
+          class:list={['star', { gold: s.gold }]}
+          style={`--x:${s.left}%;--y:${s.top}%;--s:${s.size}px;--o:${s.opacity};--d:${s.duration}s;--delay:${s.delay}s`}
+        />
+      ))
+    }
+  </div>
+  <span class="shooting-star"></span>
+</div>
+
+<style>
+  .sky {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+    mask-image: linear-gradient(180deg, #000 0%, #000 82%, transparent 98%);
+  }
+
+  .stars {
+    position: absolute;
+    inset: 0;
+  }
+
+  .star {
+    position: absolute;
+    left: var(--x);
+    top: var(--y);
+    width: var(--s);
+    height: var(--s);
+    border-radius: 50%;
+    background: #fff;
+    opacity: var(--o);
+    animation: n-twinkle var(--d) ease-in-out var(--delay) infinite;
+  }
+
+  .star.gold {
+    background: oklch(0.9 0.09 85);
+  }
+
+  .shooting-star {
+    position: absolute;
+    top: 180px;
+    right: 12%;
+    width: 120px;
+    height: 1.5px;
+    border-radius: 2px;
+    background: linear-gradient(90deg, transparent, oklch(0.95 0.03 90));
+    animation: n-shoot 7s ease-in 2s infinite;
+  }
+</style>

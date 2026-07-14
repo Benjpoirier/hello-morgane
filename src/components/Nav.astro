@@ -1,0 +1,87 @@
+---
+import Logo from './Logo.astro';
+import { links } from '../data/site';
+---
+
+<header>
+  <nav aria-label="Navigation principale">
+    <a href="#top" class="brand">
+      <Logo size={27} />
+      <span class="serif">Morgane</span>
+    </a>
+
+    <div class="spacer"></div>
+
+    <a class="nav-link" href="#features">Fonctionnalités</a>
+    <a class="nav-link" href="#flow">Le rituel</a>
+    <a class="nav-link" href="#guides">Guides</a>
+    <a class="nav-link" href={links.github} rel="noopener">GitHub</a>
+    <a class="cta" href="#get">Télécharger</a>
+  </nav>
+</header>
+
+<style>
+  header {
+    position: relative;
+    z-index: 40;
+  }
+
+  nav {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 26px 32px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    color: inherit;
+  }
+
+  .brand span {
+    font-size: 24px;
+    letter-spacing: 0.01em;
+  }
+
+  .spacer {
+    flex: 1;
+  }
+
+  .nav-link {
+    font-size: 14px;
+    color: var(--text-2);
+  }
+
+  .nav-link:hover {
+    color: var(--amber);
+  }
+
+  .cta {
+    font-size: 14px;
+    font-weight: 600;
+    color: oklch(0.15 0.04 285);
+    background: var(--amber);
+    padding: 9px 18px;
+    border-radius: 999px;
+  }
+
+  .cta:hover {
+    background: var(--amber-hi);
+    color: oklch(0.15 0.04 285);
+  }
+
+  @media (max-width: 620px) {
+    nav {
+      padding: 18px 20px;
+      gap: 12px;
+    }
+
+    .nav-link {
+      display: none;
+    }
+  }
+</style>

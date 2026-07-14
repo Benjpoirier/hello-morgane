@@ -1,0 +1,167 @@
+---
+import Icon from './Icon.astro';
+import { platforms, altDownloads, links, VERSION } from '../data/site';
+---
+
+<section id="get">
+  <h2 class="serif">Installe Morgane <span class="accent">sur ton ordinateur</span></h2>
+  <p class="sub">
+    Un seul fichier à télécharger. FFmpeg est récupéré tout seul au premier lancement s'il te
+    manque. Version <code class="mono">{VERSION}</code> · publiée sur les Releases GitHub.
+  </p>
+
+  <ul class="grid">
+    {
+      platforms.map((p) => (
+        <li>
+          <a class="card" href={p.href} rel="noopener">
+            <span class="icon">
+              <Icon name={p.icon} size={30} />
+            </span>
+            <span class="title">{p.title}</span>
+            <span class="detail mono">{p.detail}</span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+
+  <p class="alt">
+    Autres formats :
+    {
+      altDownloads.map((d, i) => (
+        <>
+          {i > 0 && <span aria-hidden="true"> · </span>}
+          <a href={d.href} rel="noopener">{d.label}</a>
+        </>
+      ))
+    }
+  </p>
+
+  <p class="links">
+    <a href={links.github} rel="noopener">Sources &amp; build (README)</a>
+    <span aria-hidden="true">·</span>
+    <a href={links.donate} rel="noopener">Soutenir le projet</a>
+  </p>
+</section>
+
+<style>
+  section {
+    position: relative;
+    z-index: 1;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 90px 32px 40px;
+    text-align: center;
+  }
+
+  h2 {
+    font-size: clamp(36px, 5.5vw, 58px);
+    line-height: 1.04;
+    margin: 0 0 14px;
+  }
+
+  .sub {
+    font-size: 17px;
+    color: var(--text-3);
+    margin: 0 auto 44px;
+    max-width: 52ch;
+  }
+
+  .sub code {
+    color: var(--amber);
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    padding: 32px 22px;
+    height: 100%;
+    border: 1px solid oklch(1 0 0 / 0.12);
+    border-radius: 18px;
+    background: oklch(0.2 0.045 290 / 0.5);
+    backdrop-filter: blur(6px);
+    color: inherit;
+    transition:
+      transform 0.15s,
+      border-color 0.2s;
+  }
+
+  .card:hover {
+    transform: translateY(-4px);
+    border-color: oklch(0.84 0.12 80 / 0.5);
+    color: inherit;
+  }
+
+  .icon {
+    color: var(--amber);
+  }
+
+  .title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  .detail {
+    font-size: 12.5px;
+    color: var(--dim);
+  }
+
+  .alt {
+    margin: 26px 0 0;
+    font-size: 13px;
+    color: var(--dim);
+  }
+
+  .alt a {
+    color: var(--text-2);
+  }
+
+  .alt a:hover {
+    color: var(--amber);
+  }
+
+  .links {
+    margin: 18px 0 0;
+    display: flex;
+    gap: 22px;
+    flex-wrap: wrap;
+    justify-content: center;
+    font-size: 14px;
+  }
+
+  .links a {
+    color: oklch(0.82 0.06 300);
+  }
+
+  .links a:hover {
+    color: var(--amber);
+  }
+
+  .links span {
+    color: oklch(0.5 0.03 300);
+  }
+
+  @media (max-width: 620px) {
+    section {
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+
+    .grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

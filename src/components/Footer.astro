@@ -1,0 +1,65 @@
+---
+import Logo from './Logo.astro';
+import { links } from '../data/site';
+---
+
+<footer>
+  <p class="brand">
+    <Logo size={24} />
+    <span class="serif">Morgane · libre &amp; open source</span>
+  </p>
+
+  <nav aria-label="Liens de pied de page">
+    <a href={links.github} rel="noopener">GitHub</a>
+    <a href="#get">Télécharger</a>
+    <a href={links.donate} rel="noopener">Soutenir</a>
+  </nav>
+</footer>
+
+<style>
+  footer {
+    position: relative;
+    z-index: 1;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 44px 32px 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    margin: 0;
+  }
+
+  .brand span {
+    font-size: 18px;
+    color: oklch(0.88 0.03 300);
+  }
+
+  nav {
+    display: flex;
+    gap: 24px;
+    font-size: 13.5px;
+  }
+
+  nav a {
+    color: oklch(0.78 0.03 300);
+  }
+
+  nav a:hover {
+    color: var(--amber);
+  }
+
+  @media (max-width: 620px) {
+    footer {
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+  }
+</style>

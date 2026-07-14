@@ -1,0 +1,73 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Starfield from '../components/Starfield.astro';
+import Nav from '../components/Nav.astro';
+import Hero from '../components/Hero.astro';
+import Features from '../components/Features.astro';
+import Flow from '../components/Flow.astro';
+import Download from '../components/Download.astro';
+import Faq from '../components/Faq.astro';
+import Guides from '../components/Guides.astro';
+import Notes from '../components/Notes.astro';
+import Footer from '../components/Footer.astro';
+import { faq } from '../data/faq';
+
+const title = 'Morgane — tes podcasts RSS sur l\'enceinte Merlin';
+const description =
+  "Transfère n'importe quel podcast RSS vers l'enceinte pour enfants Merlin, en Wi-Fi direct. Application libre, sans compte ni cloud. macOS, Windows, Linux.";
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faq.map((item) => ({
+    '@type': 'Question',
+    name: item.q,
+    acceptedAnswer: { '@type': 'Answer', text: item.a },
+  })),
+};
+---
+
+<BaseLayout title={title} description={description} schemas={[faqSchema]}>
+  <div class="page">
+    <Starfield />
+    <div class="horizon" aria-hidden="true"></div>
+
+    <Nav />
+
+    <main>
+      <Hero />
+      <Features />
+      <Flow />
+      <Download />
+      <Guides />
+      <Faq />
+      <Notes />
+    </main>
+
+    <Footer />
+  </div>
+</BaseLayout>
+
+<style>
+  .page {
+    position: relative;
+    overflow-x: hidden;
+    background: radial-gradient(
+      140% 100% at 50% -10%,
+      oklch(0.28 0.09 295) 0%,
+      oklch(0.17 0.06 285) 42%,
+      oklch(0.11 0.04 280) 100%
+    );
+  }
+
+  .horizon {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 340px;
+    pointer-events: none;
+    z-index: 0;
+    background: radial-gradient(120% 100% at 50% 100%, oklch(0.4 0.14 300 / 0.4), transparent 70%);
+  }
+</style>

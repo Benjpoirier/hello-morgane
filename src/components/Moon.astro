@@ -1,0 +1,43 @@
+---
+interface Props {
+  off: number;
+  id: string;
+}
+
+const { off, id } = Astro.props;
+
+const r = 25;
+const cx = 30;
+const cy = 30;
+
+const maskId = `moon-mask-${id}`;
+const gradId = `moon-lit-${id}`;
+---
+
+<svg width="56" height="56" viewBox="0 0 60 60" aria-hidden="true">
+  <defs>
+    <radialGradient id={gradId} cx="38%" cy="32%" r="75%">
+      <stop offset="0%" stop-color="oklch(0.95 0.07 88)"></stop>
+      <stop offset="100%" stop-color="oklch(0.82 0.13 78)"></stop>
+    </radialGradient>
+    <mask id={maskId}>
+      <circle cx={cx} cy={cy} r={r} fill="#fff"></circle>
+      {off < r * 2 && <circle cx={cx - off} cy={cy} r={r} fill="#000" />}
+    </mask>
+  </defs>
+
+  <circle
+    cx={cx}
+    cy={cy}
+    r={r}
+    fill="oklch(0.26 0.05 288)"
+    stroke="oklch(1 0 0 / 0.14)"
+    stroke-width="1"></circle>
+  <circle cx={cx} cy={cy} r={r} fill={`url(#${gradId})`} mask={`url(#${maskId})`}></circle>
+</svg>
+
+<style>
+  svg {
+    filter: drop-shadow(0 0 14px oklch(0.84 0.13 80 / 0.4));
+  }
+</style>

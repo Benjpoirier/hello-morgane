@@ -1,0 +1,37 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Typecheck
+        run: pnpm check
+
+      - name: Build
+        run: pnpm build
+
+      - name: Vérifier les fichiers SEO
+        run: |
+          set -e
+          for f in dist/index.html dist/sitemap-index.xml dist/robots.txt dist/og.png; do
+            test -s "$f" || { echo "::error::$f manquant ou vide"; exit 1; }
+          done
+          grep -q '<link rel="canonical"' dist/index.html || { echo "::error::canonical absent"; exit 1; }
+          grep -q 'application/ld+json' dist/index.html || { echo "::error::JSON-LD absent"; exit 1; }
+          echo "OK — canonical, JSON-LD, sitemap, robots, og:image présents"

@@ -1,0 +1,154 @@
+---
+import Moon from './Moon.astro';
+import { steps } from '../data/site';
+---
+
+<section id="flow">
+  <header class="head">
+    <p class="eyebrow">le rituel en deux temps</p>
+    <h2 class="serif">Prépare le jour, <span class="accent">transfère le soir</span></h2>
+    <p class="sub">
+      L'enceinte n'accepte qu'une connexion à la fois : tu prépares sur ton Wi-Fi habituel, puis tu
+      rejoins celui de la Merlin pour transférer. Morgane sérialise ses opérations — une seule à la
+      fois, jamais de transfert concurrent.
+    </p>
+  </header>
+
+  <div class="track">
+    <span class="line" aria-hidden="true"></span>
+    <ol class="grid">
+      {
+        steps.map((s) => (
+          <li class="step">
+            <span class="moon">
+              <Moon off={s.moon} id={s.n} />
+            </span>
+            <div class="body">
+              <p class="meta mono">{s.n} · {s.net}</p>
+              <h3>{s.title}</h3>
+              <p class="desc">{s.body}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  section {
+    position: relative;
+    z-index: 1;
+    max-width: var(--shell);
+    margin: 0 auto;
+    padding: 90px 32px 40px;
+  }
+
+  .head {
+    text-align: center;
+    max-width: 62ch;
+    margin: 0 auto 60px;
+  }
+
+  h2 {
+    font-size: clamp(34px, 5vw, 52px);
+    line-height: 1.06;
+    margin: 0 0 16px;
+  }
+
+  .sub {
+    font-size: 16px;
+    color: var(--text-3);
+    margin: 0;
+  }
+
+  .track {
+    position: relative;
+  }
+
+  .line {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 26px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, oklch(0.84 0.12 80 / 0.4), transparent);
+    z-index: 0;
+  }
+
+  .grid {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .step {
+    text-align: center;
+  }
+
+  .moon {
+    display: block;
+    width: 56px;
+    margin: 0 auto 20px;
+  }
+
+  .meta {
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: oklch(0.72 0.08 80);
+    margin: 0 0 8px;
+  }
+
+  h3 {
+    font-size: 17px;
+    font-weight: 600;
+    margin: 0 0 8px;
+    color: #fff;
+  }
+
+  .desc {
+    font-size: 13.5px;
+    line-height: 1.55;
+    color: oklch(0.78 0.03 300);
+    margin: 0;
+  }
+
+  @media (max-width: 860px) {
+    .grid {
+      grid-template-columns: 1fr 1fr;
+      row-gap: 40px;
+    }
+
+    .line {
+      display: none;
+    }
+  }
+
+  @media (max-width: 620px) {
+    section {
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+
+    .grid {
+      grid-template-columns: 1fr;
+    }
+
+    .step {
+      display: flex;
+      gap: 16px;
+      text-align: left;
+    }
+
+    .moon {
+      margin: 0;
+      flex-shrink: 0;
+    }
+  }
+</style>

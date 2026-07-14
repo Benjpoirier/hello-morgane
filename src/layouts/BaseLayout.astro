@@ -1,0 +1,95 @@
+---
+import { Font } from 'astro:assets';
+import { links, VERSION } from '../data/site';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+  path?: string;
+  noindex?: boolean;
+  schemas?: Record<string, unknown>[];
+}
+
+const { title, description, path = '/', noindex = false, schemas = [] } = Astro.props;
+
+const canonical = new URL(path, Astro.site).href;
+const ogImage = new URL('/og.png', Astro.site).href;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'Morgane',
+  applicationCategory: 'MultimediaApplication',
+  operatingSystem: 'macOS, Windows, Linux',
+  softwareVersion: VERSION,
+  description,
+  url: canonical,
+  image: ogImage,
+  downloadUrl: links.releases,
+  license: 'https://www.gnu.org/licenses/gpl-3.0.html',
+  isAccessibleForFree: true,
+  inLanguage: 'fr-FR',
+  offers: {
+    '@type': 'Offer',
+    price: '0',
+    priceCurrency: 'EUR',
+  },
+  author: {
+    '@type': 'Person',
+    name: 'Benjamin Poirier',
+    url: 'https://github.com/Benjpoirier',
+  },
+};
+---
+
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex, follow" />}
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Morgane" />
+    <meta property="og:locale" content="fr_FR" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Morgane — podcasts RSS vers l'enceinte Merlin" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image:alt" content="Morgane — podcasts RSS vers l'enceinte Merlin" />
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="theme-color" content="#0d0a1f" />
+
+    <Font cssVariable="--font-serif" preload />
+    <Font cssVariable="--font-sans" preload={[{ weight: 400 }, { weight: 600 }]} />
+    <Font cssVariable="--font-mono" />
+
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} is:inline />
+    {
+      schemas.map((schema) => (
+        <script type="application/ld+json" set:html={JSON.stringify(schema)} is:inline />
+      ))
+    }
+  </head>
+
+  <body>
+    <a href="#top" class="sr-only">Aller au contenu</a>
+    <slot />
+  </body>
+</html>

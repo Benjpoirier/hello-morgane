@@ -1,0 +1,579 @@
+---
+import Icon from './Icon.astro';
+import Logo from './Logo.astro';
+import ViewPodcasts from './app/ViewPodcasts.astro';
+import ViewConnect from './app/ViewConnect.astro';
+import ViewSync from './app/ViewSync.astro';
+import { nav } from '../data/app';
+
+let seed = 21;
+const rnd = () => {
+  seed = (seed * 1103515245 + 12345) & 0x7fffffff;
+  return seed / 0x7fffffff;
+};
+
+const stars = Array.from({ length: 45 }, () => ({
+  size: (rnd() * 2 + 1).toFixed(1),
+  top: (rnd() * 100).toFixed(2),
+  left: (rnd() * 100).toFixed(2),
+  gold: rnd() > 0.85,
+  opacity: (rnd() * 0.6 + 0.2).toFixed(2),
+  duration: (rnd() * 3 + 2).toFixed(1),
+  delay: (rnd() * 3).toFixed(1),
+}));
+---
+
+<figure class="frame">
+  <div class="window" data-app data-active="podcasts">
+    <div class="sky" aria-hidden="true">
+      {
+        stars.map((s) => (
+          <span
+            class:list={['star', { gold: s.gold }]}
+            style={`--x:${s.left}%;--y:${s.top}%;--s:${s.size}px;--o:${s.opacity};--d:${s.duration}s;--delay:${s.delay}s`}
+          />
+        ))
+      }
+    </div>
+
+    <aside class="sidebar">
+      <div class="titlebar" aria-hidden="true">
+        <span class="light red"></span>
+        <span class="light yellow"></span>
+        <span class="light green"></span>
+      </div>
+
+      <div class="brand">
+        <Logo size={24} />
+        <span class="serif">Morgane</span>
+      </div>
+
+      <nav aria-label="Vues de l'application (démo)">
+        {
+          nav.map((item) => (
+            <button
+              type="button"
+              class:list={['nav-item', { active: item.id === 'podcasts' }]}
+              data-view-btn={item.id}
+              aria-pressed={item.id === 'podcasts' ? 'true' : 'false'}
+            >
+              <Icon name={item.icon} size={16} />
+              <span class="label">{item.label}</span>
+            </button>
+          ))
+        }
+      </nav>
+
+      <div class="status">
+        <p class="conn">
+          <span class="dot"></span>
+          Enceinte connectée
+        </p>
+        <p class="ping mono">ping 12 ms</p>
+        <p class="device">
+          <Icon name="speaker" size={16} />
+          <span class="name">Merlin de Jeanne</span>
+          <Icon name="chevrons-up-down" size={14} />
+        </p>
+      </div>
+    </aside>
+
+    <div class="main">
+      <div class="view" data-view="connect" hidden><ViewConnect /></div>
+      <div class="view" data-view="podcasts"><ViewPodcasts /></div>
+      <div class="view" data-view="sync" hidden><ViewSync /></div>
+
+      <div class="player">
+        <span class="thumb t40"></span>
+        <span class="now">Ulysse et le cyclope Polyphème</span>
+
+        <span class="transport">
+          <span class="t-btn"><Icon name="rotate-ccw" size={16} /></span>
+          <span class="t-play">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <rect x="6" y="5" width="4" height="14" rx="1"></rect>
+              <rect x="14" y="5" width="4" height="14" rx="1"></rect>
+            </svg>
+          </span>
+          <span class="t-btn"><Icon name="rotate-cw" size={16} /></span>
+        </span>
+
+        <span class="scrub">
+          <span class="time mono">0:42</span>
+          <span class="bar"><span class="fill"></span></span>
+          <span class="time mono">48:15</span>
+        </span>
+
+        <span class="t-btn stop"><Icon name="x" size={16} /></span>
+      </div>
+    </div>
+
+    <div class="modal" data-modal hidden>
+      <div class="sheet">
+        <p class="m-title" data-modal-title>Synchronisation en cours…</p>
+        <p class="m-sub mono">
+          Épisode <span data-modal-step>1</span> / <span data-modal-total>3</span>
+        </p>
+        <span class="m-bar"><span class="m-fill" data-modal-fill></span></span>
+        <button type="button" class="m-close" data-modal-close hidden>Fermer</button>
+      </div>
+    </div>
+  </div>
+
+  <figcaption class="sr-only">
+    La fenêtre de Morgane, vue « Podcasts » : les flux RSS à gauche, les épisodes des Odyssées à
+    droite, trois épisodes cochés et prêts à être transférés vers l'enceinte Merlin connectée.
+  </figcaption>
+</figure>
+
+<script>
+  const app = document.querySelector<HTMLElement>('[data-app]');
+
+  if (app) {
+    const views = app.querySelectorAll<HTMLElement>('[data-view]');
+    const buttons = app.querySelectorAll<HTMLButtonElement>('[data-view-btn]');
+
+    const show = (name: string) => {
+      app.dataset.active = name;
+      views.forEach((v) => (v.hidden = v.dataset.view !== name));
+      buttons.forEach((b) => {
+        const on = b.dataset.viewBtn === name;
+        b.classList.toggle('active', on);
+        b.setAttribute('aria-pressed', String(on));
+      });
+    };
+
+    buttons.forEach((b) => b.addEventListener('click', () => show(b.dataset.viewBtn!)));
+
+    const boxes = app.querySelectorAll<HTMLInputElement>('[data-ep]');
+    const counters = app.querySelectorAll<HTMLElement>('[data-sel-count]');
+
+    const recount = () => {
+      const n = [...boxes].filter((b) => b.checked).length;
+      counters.forEach((c) => (c.textContent = String(n)));
+      return n;
+    };
+
+    boxes.forEach((b) => b.addEventListener('change', recount));
+
+    const modal = app.querySelector<HTMLElement>('[data-modal]');
+    const fill = app.querySelector<HTMLElement>('[data-modal-fill]');
+    const step = app.querySelector<HTMLElement>('[data-modal-step]');
+    const total = app.querySelector<HTMLElement>('[data-modal-total]');
+    const title = app.querySelector<HTMLElement>('[data-modal-title]');
+    const close = app.querySelector<HTMLButtonElement>('[data-modal-close]');
+    const syncBtn = app.querySelector<HTMLButtonElement>('[data-sync]');
+
+    let timer: number | undefined;
+
+    syncBtn?.addEventListener('click', () => {
+      const n = recount();
+      if (!modal || !fill || !step || !total || !title || !close || n === 0) return;
+
+      let done = 0;
+      total.textContent = String(n);
+      step.textContent = '1';
+      title.textContent = 'Synchronisation en cours…';
+      fill.style.width = '0%';
+      close.hidden = true;
+      modal.hidden = false;
+
+      clearInterval(timer);
+      timer = window.setInterval(() => {
+        done += 1;
+        fill.style.width = `${(done / n) * 100}%`;
+        step.textContent = String(Math.min(done + 1, n));
+
+        if (done >= n) {
+          clearInterval(timer);
+          title.textContent = `Synchronisation terminée (${n} épisode(s))`;
+          close.hidden = false;
+        }
+      }, 700);
+    });
+
+    close?.addEventListener('click', () => {
+      if (modal) modal.hidden = true;
+    });
+  }
+</script>
+
+<style>
+  .window {
+    --a-card: oklch(0.21 0.045 290);
+    --a-fg: oklch(0.93 0.02 300);
+    --a-muted: oklch(0.64 0.03 300);
+    --a-primary: oklch(0.74 0.18 315);
+    --a-brand: oklch(0.84 0.12 80);
+    --a-success: oklch(0.72 0.19 149);
+    --a-destructive: oklch(0.62 0.22 25);
+    --a-border: oklch(1 0 0 / 0.09);
+    --a-thumb: linear-gradient(135deg, oklch(0.64 0.16 315), oklch(0.44 0.2 300));
+  }
+
+  .frame {
+    position: relative;
+    margin: 0;
+  }
+
+  .window {
+    display: flex;
+    position: relative;
+    height: 480px;
+    border: 1px solid oklch(1 0 0 / 0.14);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 50px 100px -40px #000;
+    text-align: left;
+    background: radial-gradient(
+      140% 100% at 50% -10%,
+      oklch(0.28 0.09 295) 0%,
+      oklch(0.17 0.06 285) 42%,
+      oklch(0.11 0.04 280) 100%
+    );
+    color: var(--a-fg);
+    font-size: 13px;
+    line-height: 1.4;
+  }
+
+  .sky {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .star {
+    position: absolute;
+    left: var(--x);
+    top: var(--y);
+    width: var(--s);
+    height: var(--s);
+    border-radius: 50%;
+    background: #fff;
+    opacity: var(--o);
+    animation: n-twinkle var(--d) ease-in-out var(--delay) infinite;
+  }
+
+  .star.gold {
+    background: oklch(0.9 0.09 85);
+  }
+
+  .sidebar {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    width: 208px;
+    flex-shrink: 0;
+    border-right: 1px solid var(--a-border);
+    background: oklch(0.21 0.045 290 / 0.4);
+  }
+
+  .titlebar {
+    height: 44px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 14px;
+  }
+
+  .light {
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+  }
+
+  .light.red {
+    background: #ff5f57;
+  }
+
+  .light.yellow {
+    background: #febc2e;
+  }
+
+  .light.green {
+    background: #28c840;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 12px 4px;
+  }
+
+  .brand span {
+    font-size: 20px;
+    color: var(--a-brand);
+  }
+
+  nav {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 8px;
+    flex: 1;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 8px 10px;
+    border: none;
+    border-radius: 8px;
+    background: none;
+    color: oklch(0.93 0.02 300 / 0.8);
+    font-family: inherit;
+    font-size: 13px;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .nav-item:hover {
+    background: oklch(0.3 0.04 300 / 0.6);
+  }
+
+  .nav-item.active {
+    background: oklch(0.74 0.18 315 / 0.12);
+    color: var(--a-primary);
+    font-weight: 500;
+  }
+
+  .nav-item .label {
+    flex: 1;
+  }
+
+  .status {
+    border-top: 1px solid var(--a-border);
+    padding: 10px 12px;
+  }
+
+  .conn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    font-size: 13px;
+    color: oklch(0.93 0.02 300 / 0.8);
+  }
+
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--a-success);
+    box-shadow: 0 0 8px var(--a-success);
+  }
+
+  .ping {
+    margin: 2px 0 0;
+    padding-left: 16px;
+    font-size: 11px;
+    color: var(--a-muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .device {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 8px 0 0;
+    padding: 5px 6px;
+    border-radius: 7px;
+    background: oklch(1 0 0 / 0.04);
+    color: var(--a-muted);
+  }
+
+  .device .name {
+    flex: 1;
+    font-size: 12px;
+    font-weight: 500;
+    color: oklch(0.93 0.02 300 / 0.9);
+  }
+
+  .main {
+    position: relative;
+    z-index: 1;
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .view {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .view[hidden] {
+    display: none;
+  }
+
+  .thumb {
+    display: block;
+    flex-shrink: 0;
+    border-radius: 8px;
+    background: var(--a-thumb);
+  }
+
+  .t40 {
+    width: 40px;
+    height: 40px;
+  }
+
+  .player {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 8px 16px;
+    border-top: 1px solid var(--a-border);
+    background: var(--a-card);
+  }
+
+  .window:not([data-active='podcasts']) .player {
+    display: none;
+  }
+
+  .now {
+    width: 150px;
+    font-size: 13px;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .transport {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .t-btn {
+    display: flex;
+    color: var(--a-muted);
+  }
+
+  .t-play {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: var(--a-primary);
+    color: oklch(0.16 0.04 288);
+  }
+
+  .scrub {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .time {
+    font-size: 11px;
+    color: var(--a-muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .bar {
+    flex: 1;
+    height: 4px;
+    border-radius: 999px;
+    background: oklch(1 0 0 / 0.12);
+    overflow: hidden;
+  }
+
+  .fill {
+    display: block;
+    width: 14%;
+    height: 100%;
+    border-radius: 999px;
+    background: var(--a-primary);
+  }
+
+  .stop {
+    margin-left: auto;
+  }
+
+  .modal {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: oklch(0.11 0.04 280 / 0.72);
+    backdrop-filter: blur(3px);
+  }
+
+  .modal[hidden] {
+    display: none;
+  }
+
+  .sheet {
+    width: 340px;
+    padding: 26px;
+    border: 1px solid var(--a-border);
+    border-radius: 16px;
+    background: var(--a-card);
+    text-align: center;
+    box-shadow: 0 30px 60px -20px #000;
+  }
+
+  .m-title {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 700;
+  }
+
+  .m-sub {
+    margin: 6px 0 0;
+    font-size: 12px;
+    color: var(--a-muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .m-bar {
+    display: block;
+    height: 7px;
+    margin-top: 16px;
+    border-radius: 999px;
+    background: oklch(1 0 0 / 0.1);
+    overflow: hidden;
+  }
+
+  .m-fill {
+    display: block;
+    width: 0%;
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--a-primary), var(--a-brand));
+    transition: width 0.3s ease;
+  }
+
+  .m-close {
+    margin-top: 20px;
+    padding: 9px 22px;
+    border: none;
+    border-radius: 9px;
+    background: var(--a-brand);
+    color: oklch(0.15 0.04 285);
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .m-close[hidden] {
+    display: none;
+  }
+</style>

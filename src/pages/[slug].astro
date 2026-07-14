@@ -1,0 +1,298 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Starfield from '../components/Starfield.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import Icon from '../components/Icon.astro';
+import { links } from '../data/site';
+
+export async function getStaticPaths() {
+  const guides = await getCollection('guides');
+  return guides.map((guide) => ({ params: { slug: guide.id }, props: { guide } }));
+}
+
+const { guide } = Astro.props;
+const { Content } = await render(guide);
+
+const path = `/${guide.id}/`;
+const url = new URL(path, Astro.site).href;
+const home = new URL('/', Astro.site).href;
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: guide.data.heading,
+  description: guide.data.description,
+  inLanguage: 'fr-FR',
+  dateModified: guide.data.updated.toISOString(),
+  mainEntityOfPage: url,
+  image: new URL('/og.png', Astro.site).href,
+  author: { '@type': 'Person', name: 'Benjamin Poirier', url: 'https://github.com/Benjpoirier' },
+  publisher: { '@type': 'Organization', name: 'Morgane', url: home },
+};
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Morgane', item: home },
+    { '@type': 'ListItem', position: 2, name: guide.data.heading, item: url },
+  ],
+};
+
+const dateFr = guide.data.updated.toLocaleDateString('fr-FR', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+---
+
+<BaseLayout
+  title={`${guide.data.title} — Morgane`}
+  description={guide.data.description}
+  path={path}
+  schemas={[articleSchema, breadcrumbSchema]}
+>
+  <div class="page">
+    <Starfield />
+
+    <Nav />
+
+    <main>
+      <article>
+        <nav class="crumbs" aria-label="Fil d'Ariane">
+          <a href="/">Morgane</a>
+          <span aria-hidden="true">/</span>
+          <span>Guide</span>
+        </nav>
+
+        <h1 class="serif">{guide.data.heading}</h1>
+        <p class="lede">{guide.data.lede}</p>
+        <p class="meta mono">Mis à jour le {dateFr}</p>
+
+        <div class="prose">
+          <Content />
+        </div>
+
+        <aside class="cta">
+          <p class="cta-title serif">Prêt à essayer ?</p>
+          <p class="cta-sub">
+            Morgane est libre, gratuite et fonctionne sur macOS, Windows et Linux.
+          </p>
+          <div class="cta-row">
+            <a class="btn primary" href="/#get">
+              <Icon name="download" size={18} stroke={2.2} />
+              Télécharger Morgane
+            </a>
+            <a class="btn ghost" href={links.github} rel="noopener">Voir le code</a>
+          </div>
+        </aside>
+      </article>
+    </main>
+
+    <Footer />
+  </div>
+</BaseLayout>
+
+<style>
+  .page {
+    position: relative;
+    overflow-x: hidden;
+    background: radial-gradient(
+      140% 100% at 50% -10%,
+      oklch(0.28 0.09 295) 0%,
+      oklch(0.17 0.06 285) 42%,
+      oklch(0.11 0.04 280) 100%
+    );
+  }
+
+  article {
+    position: relative;
+    z-index: 1;
+    max-width: 74ch;
+    margin: 0 auto;
+    padding: 40px 32px 60px;
+  }
+
+  .crumbs {
+    display: flex;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--dim);
+    margin-bottom: 28px;
+  }
+
+  .crumbs a {
+    color: var(--text-2);
+  }
+
+  .crumbs a:hover {
+    color: var(--amber);
+  }
+
+  h1 {
+    font-size: clamp(36px, 5.5vw, 58px);
+    line-height: 1.06;
+    letter-spacing: -0.015em;
+    margin: 0 0 20px;
+  }
+
+  .lede {
+    font-size: 19px;
+    line-height: 1.6;
+    color: var(--text-2);
+    margin: 0 0 16px;
+  }
+
+  .meta {
+    font-size: 12px;
+    color: var(--dim);
+    margin: 0 0 48px;
+  }
+
+  .prose :global(h2) {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    font-size: 32px;
+    line-height: 1.15;
+    margin: 52px 0 16px;
+    color: #fff;
+  }
+
+  .prose :global(h3) {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 32px 0 10px;
+    color: #fff;
+  }
+
+  .prose :global(p),
+  .prose :global(li) {
+    font-size: 16px;
+    line-height: 1.7;
+    color: var(--text-3);
+  }
+
+  .prose :global(ul) {
+    padding-left: 20px;
+  }
+
+  .prose :global(li) {
+    margin-bottom: 8px;
+  }
+
+  .prose :global(strong) {
+    color: #fff;
+    font-weight: 600;
+  }
+
+  .prose :global(a) {
+    color: var(--amber);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .prose :global(code) {
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+    color: oklch(0.82 0.1 315);
+    background: oklch(0.6 0.2 305 / 0.16);
+    padding: 2px 6px;
+    border-radius: 6px;
+  }
+
+  .prose :global(table) {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 24px 0;
+    font-size: 15px;
+  }
+
+  .prose :global(th),
+  .prose :global(td) {
+    text-align: left;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--hairline);
+    color: var(--text-3);
+  }
+
+  .prose :global(th) {
+    color: #fff;
+    font-weight: 600;
+    font-size: 13px;
+  }
+
+  .prose :global(td:first-child) {
+    font-family: var(--font-mono);
+    font-size: 13px;
+  }
+
+  .cta {
+    margin-top: 64px;
+    padding: 32px;
+    border: 1px solid var(--hairline);
+    border-radius: 18px;
+    background: var(--panel);
+    text-align: center;
+  }
+
+  .cta-title {
+    margin: 0 0 8px;
+    font-size: 26px;
+    color: #fff;
+  }
+
+  .cta-sub {
+    margin: 0 0 24px;
+    font-size: 15px;
+    color: var(--text-3);
+  }
+
+  .cta-row {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    padding: 13px 24px;
+    border-radius: 999px;
+    font-size: 15px;
+    font-weight: 600;
+  }
+
+  .btn.primary {
+    background: var(--amber);
+    color: oklch(0.15 0.04 285);
+  }
+
+  .btn.primary:hover {
+    background: var(--amber-hi);
+    color: oklch(0.15 0.04 285);
+  }
+
+  .btn.ghost {
+    border: 1px solid oklch(1 0 0 / 0.2);
+    color: var(--text);
+  }
+
+  .btn.ghost:hover {
+    border-color: oklch(0.84 0.12 80 / 0.6);
+    color: var(--text);
+  }
+
+  @media (max-width: 620px) {
+    article {
+      padding: 32px 20px 48px;
+    }
+
+    .prose :global(h2) {
+      font-size: 27px;
+    }
+  }
+</style>
